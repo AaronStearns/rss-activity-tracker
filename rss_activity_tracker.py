@@ -1,42 +1,74 @@
 import requests
 import xmltodict
+from datetime import datetime
 
-"""
+# URLs stored as lists in case a company has more than one rss url
 rss_dict = { 
-  "crime_junkie": { "rss_urls": ['https://feeds.megaphone.fm/ADL9840290619', 'https://feeds.megaphone.fm/ADL9840290619'] }, 
-  "new_york_times": { "rss_urls": ['https://feeds.simplecast.com/54nAGcIl'] } }
+  "crime_junkie": { "rss_urls": ['https://feeds.megaphone.fm/ADL9840290619'] }, 
+  "new_york_times": { "rss_urls": ['https://feeds.simplecast.com/54nAGcIl'] } 
+}
 
-for key in rss_dict:
-  for rss_url in rss_dict[key]['rss_urls']:
-    print(rss_url)
+def calculateDaysSinceLastPublish(company_and_rss_url_dict):
 
-"""
+  # Dict to store results in format:
+  # KEY: Company (string)
+  # VALUE: List of days that rss published
+  rss_published_days = {}
 
-url = "https://feeds.megaphone.fm/ADL9840290619"
-response = requests.get(url)
-data = xmltodict.parse(response.content)
+  #today = datetime.now().astimezone()
 
-most_recent_published = []
-try:
-  for i, key in enumerate(data['rss']['channel']['item']): 
-    if i == 0:
-      most_recent_published.append(key['pubDate'])
+  for company in company_and_rss_url_dict:
 
-  print(most_recent_published[0])
-except:
-  # move to next company key in rss_dict
-  print("nah")
+    if company not in rss_published_days:
+      rss_published_days[company] = {}
+
+    for rss_url in company_and_rss_url_dict[company]['rss_urls']:
+      
+      response = requests.get(rss_url)
+      rss_data_dict = xmltodict.parse(response.content)
+
+      try:
+        for key in rss_data_dict['rss']['channel']['item']: 
+          rss_published_days = createPublishHistoryDictsForRSS(key, company, rss_published_days)
+      except:
+        pass
+
+  return rss_published_days
 
 
+def createPublishHistoryDictsForRSS(key, company, rss_published_days):
+  """
+  Parses dates into dict with structure:
+  {
+    'company_name': { 2020: 
+                      { 12: [21, 18, 14, 7, 4, 1], 
+                        11: [30, 23, 16, 9, 2], 
+                        ...
+                    }
+  }
+  Where a given company contains posts years, and post years containing
+  post months as keys and post days as ints in a list for corresponding months 
+  """  
 
-# read each rss url
+  date_str = key['pubDate']
 
-# convert the XML to a dict 
-# save only the <item> nodes and their <time> subnodes that have the rss upload time
+  try:
+    # Date format from rss 'pubDate': Mon, 25 Jan 2021 08:00:00 -0000
+    date = datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S %z')
+    
+    if date.year not in rss_published_days[company]:
+      rss_published_days[company][date.year] = {}
 
-# use regex to parse the item time into a formatted timestamp
+    if date.month not in rss_published_days[company][date.year]:
+      rss_published_days[company][date.year][date.month] = []
+    
+    if date.day not in rss_published_days[company][date.year][date.month]:
+      rss_published_days[company][date.year][date.month].append(date.day)
+  except:
+    pass
 
-# ??? create python class Company with properties: Name, Urls, DaysSincePosting
+  return rss_published_days
 
+print(calculateDaysSinceLastPublish(rss_dict))
 
 
