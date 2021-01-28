@@ -2,14 +2,7 @@ import sys
 import requests
 import xmltodict
 from datetime import datetime
-
-##### Main dict #####
-# URLs stored as lists in case a company has more than one rss url
-rss_dict = { 
-  "crime_junkie": { "rss_urls": ['https://feeds.megaphone.fm/ADL9840290619'] }, 
-  "new_york_times": { "rss_urls": ['https://feeds.simplecast.com/54nAGcIl'] } ,
-  "my_favorite_murder": { "rss_urls": ['https://www.omnycontent.com/d/playlist/aaea4e69-af51-495e-afc9-a9760146922b/44bbf446-4627-4f83-a7fd-ab070007db11/72b96aa8-88bd-480a-87af-ab070007db36/podcast.rss'] }
-}
+from companies_rss_dict import rss_dict # Main dict of companies and their rss urls
 
 ####################################################################################
 ##### Helper Methods #####
@@ -73,16 +66,13 @@ def create_publish_history_dicts_for_RSS( value, company, rss_published_days ):
 ####################################################################################
 ##### Main Method #####
 ####################################################################################
-
-def companyActivityTracker( start_day, start_month, start_year, end_day, end_month, end_year ):
+def companyActivityTracker( start_day, start_month, end_day, end_month, year ):
   # Defining helpful error messages for using method
   general_method_error = "ERROR: companyActivityTracker() method \n"
   if start_month == end_month and start_day >= end_day:
     return general_method_error + "Start day is greater than or equal to end day."
   if start_month > end_month:
     return general_method_error + "Start month is greater than end month."
-  if start_year > end_year:
-    return general_method_error + "Start year is greater than end year."
   
   # Function to determine which companies had no activity for a given date range
   publish_dates_dict = parse_rss_url_xml(rss_dict)
@@ -93,21 +83,30 @@ def companyActivityTracker( start_day, start_month, start_year, end_day, end_mon
     if company not in results_dict:
       results_dict[company] = []
 
-    if start_year == end_year and start_year in publish_dates_dict[company]['posts']:
+    if year in publish_dates_dict[company]['posts']:
       # checking a date range within the same month of the same year
-      if start_month == end_month and start_month in publish_dates_dict[company]['posts'][start_year]:
-        for day in publish_dates_dict[company]['posts'][start_year][start_month]:
+      if start_month == end_month and start_month in publish_dates_dict[company]['posts'][year]:
+        for day in publish_dates_dict[company]['posts'][year][start_month]:
           if day <= end_day and day >= start_day:
             results_dict[company].append(day)
-          """
-      elif start_month < end_month and start_month in publish_dates_dict[company]['posts'][start_year]:
-        if end_month in publish_dates_dict[company]['posts'][start_year]:
-          for day in publish_dates_dict[company]['posts'][start_year][start_month]:
-            if day >= start_day:
-              results_dict[company].append(day)
-          """
-          #TODO: check across months
+      
 
+      elif start_month < end_month and start_month in publish_dates_dict[company]['posts'][year] and end_month in publish_dates_dict[company]['posts'][year]:
+        for month in range(start_month, end_month+1):
+          if month not in publish_dates_dict[company]['posts'][year]:
+            continue # no posts for that month, nothing to append to results_dict
+          else:
+            if month == start_month:
+              for day in publish_dates_dict[company]['posts'][year][start_month]:
+                if day >= start_day:
+                  results_dict[company].append(day)
+            elif month == end_month:
+              for day in publish_dates_dict[company]['posts'][year][end_month]:
+                if day <= end_day:
+                  results_dict[company].append(day)
+            else:
+              for day in publish_dates_dict[company]['posts'][year][month]:
+                results_dict[company].append(day) # append all posts in the month to results_dict
 
   comapnies_without_activity = []
   for company in results_dict:
@@ -117,6 +116,6 @@ def companyActivityTracker( start_day, start_month, start_year, end_day, end_mon
   return comapnies_without_activity
 
 
-print(companyActivityTracker(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6])))
+print(companyActivityTracker(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
 
 
