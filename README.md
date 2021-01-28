@@ -10,7 +10,7 @@
 
 ## To run:
 
-1) Using the command line, navigate to the folder containing rss_activity_tracker.py and companies_rss_dict.py
+1) Using the command line, navigate to the folder containing `rss_activity_tracker.py` and `companies_rss_dict.py`
 
 3) Five args are passed to the script. The five args correspond to the range of days and months to check if a company has not had activity in that time. The format is:
 
