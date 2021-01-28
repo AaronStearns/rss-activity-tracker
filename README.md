@@ -1,3 +1,5 @@
+![](/images/rss_logo.jpeg)
+
 # rss-activity-tracker
 
 A dictionary keyed by company with values as lists of RSS feed urls can be found in companies_rss_dict.py
