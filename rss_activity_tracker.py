@@ -144,7 +144,6 @@ def companyActivityTracker( start_day, start_month, end_day, end_month, year ):
   return comapnies_without_activity
 
 
-
 print(companyActivityTracker(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
 
 
