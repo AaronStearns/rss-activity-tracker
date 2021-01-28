@@ -1,4 +1,4 @@
-![RSS Logo](/rss_logo.jpeg)
+![](/rss_logo.jpeg | width = 200)
 
 # rss-activity-tracker
 
