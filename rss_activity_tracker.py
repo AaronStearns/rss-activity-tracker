@@ -63,6 +63,29 @@ def create_publish_history_dicts_for_RSS( value, company, rss_published_days ):
 
   return rss_published_days
 
+def check_sys_args():
+  publish_dates_dict = parse_rss_url_xml(rss_dict)
+
+  # make sure that day, month, and year sys.argv args fall within these ranges
+  month = range(1,13) # 1-12, 13 not inclusive
+  day = range(1,32)
+  rss_post_years = set()
+
+  for company in publish_dates_dict:
+    for year in publish_dates_dict[company]['posts']:
+      rss_post_years.add(year)
+  try:
+    if int(sys.argv[1]) and int(sys.argv[3]) not in day:
+      return "ERROR: Day values do not fall within the range 1-31"
+    if int(sys.argv[2]) and int(sys.argv[4]) not in month:
+      return "ERROR: Month values do not fall within the range 1-12"
+    if int(sys.argv[5]) not in rss_post_years:
+      return "ERROR: Year value do not fall within the rss post year range"
+  except:
+    pass
+
+  return publish_dates_dict
+
 ####################################################################################
 ##### Main Method #####
 ####################################################################################
@@ -75,7 +98,12 @@ def companyActivityTracker( start_day, start_month, end_day, end_month, year ):
     return general_method_error + "Start month is greater than end month."
   
   # Function to determine which companies had no activity for a given date range
-  publish_dates_dict = parse_rss_url_xml(rss_dict)
+  publish_dates_dict = check_sys_args()
+
+  if isinstance(publish_dates_dict, dict):
+    pass
+  else:
+    return publish_dates_dict # will print helpful error message
 
   results_dict = {} # KEY: company VALUE: list of post dats between range start_day and end_day 
 
@@ -110,10 +138,11 @@ def companyActivityTracker( start_day, start_month, end_day, end_month, year ):
 
   comapnies_without_activity = []
   for company in results_dict:
-    if len(results_dict[company]) == 0:
+    if len(results_dict[company]) == 0: # no posts for a given company
       comapnies_without_activity.append(company)
 
   return comapnies_without_activity
+
 
 
 print(companyActivityTracker(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
