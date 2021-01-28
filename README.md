@@ -1,4 +1,4 @@
-![RSS Logo](/rss_logo.jpeg =250x250)
+![RSS Logo](/rss_logo.jpeg){:height="150px" width="200px"}
 
 # rss-activity-tracker
 
