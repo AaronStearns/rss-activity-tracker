@@ -2,15 +2,17 @@
 
 # rss-activity-tracker
 
-A dictionary keyed by company with values as lists of RSS feed urls can be found in companies_rss_dict.py
+## Files:
 
-The file rss_activity_tracker.py imports this dict from companies_rss_dict.py
+`companies_rss_dict.py` contains a dictionary keyed by company with values as lists of RSS feed urls
+
+`rss_activity_tracker.py` is the main script and imports the dict from companies_rss_dict.py
 
 ## To run:
 
 1) Using the command line, navigate to the folder containing rss_activity_tracker.py and companies_rss_dict.py
 
-3) Five args are passed to the script. The five args correspond to the range of days to check if a company has not had activity in that time. The format is:
+3) Five args are passed to the script. The five args correspond to the range of days and months to check if a company has not had activity in that time. The format is:
 
 [start_day] [start_month] [end_day] [end_month] [year]
 
