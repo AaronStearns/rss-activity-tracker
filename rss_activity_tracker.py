@@ -35,14 +35,14 @@ def parse_rss_url_xml( company_and_rss_url_dict ):
 
       try:
         for value in rss_data_dict['rss']['channel']['item']: 
-          rss_published_days = create_publish_history_dicts_for_RSS(value, company, rss_published_days)
+          rss_published_days = create_publish_history_dicts_for_rss(value, company, rss_published_days)
       except:
         pass
 
   return rss_published_days
 
 
-def create_publish_history_dicts_for_RSS( value, company, rss_published_days ):
+def create_publish_history_dicts_for_rss( value, company, rss_published_days ):
   # The 'pubDate' (published date) node from the parsed XML
   date_string = value['pubDate']
 
@@ -88,7 +88,7 @@ def check_sys_args():
   return publish_dates_dict
 
 
-def intTryParse(value):
+def int_try_parse(value):
     try:
         return int(value), True
     except ValueError:
@@ -97,7 +97,7 @@ def intTryParse(value):
 ####################################################################################
 ##### Main Methods #####
 ####################################################################################
-def companyActivityTracker( start_day, start_month, end_day, end_month, year ):
+def company_activity_tracker( start_day, start_month, end_day, end_month, year ):
   # Defining helpful error messages for using method
   general_method_error = "ERROR: companyActivityTracker() method \n"
   if start_month == end_month and start_day >= end_day:
@@ -151,19 +151,19 @@ def companyActivityTracker( start_day, start_month, end_day, end_month, year ):
 
   return comapnies_without_activity
 
-def check_args_and_call_companyActivityTracker():
+def check_args_and_call_company_activity_tracker():
   # check that all args are indeed int values
   flag = 0
   for i in range(1, len(sys.argv)):
-    if intTryParse(sys.argv[i])[1] == False:
+    if int_try_parse(sys.argv[i])[1] == False:
       flag = 1
 
   if len(sys.argv) != 6:
       print("ERROR: Incorrect number of args given")
   elif len(sys.argv) == 6 and flag == 0:
-    print(companyActivityTracker(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
+    print(company_activity_tracker(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
   else:
     print("ERROR: Non-integer value passed as date")
   return
 
-check_args_and_call_companyActivityTracker()
+check_args_and_call_company_activity_tracker()
