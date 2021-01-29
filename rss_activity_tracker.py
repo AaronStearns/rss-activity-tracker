@@ -166,4 +166,5 @@ def check_args_and_call_company_activity_tracker():
     print("ERROR: Non-integer value passed as date")
   return
 
+
 check_args_and_call_company_activity_tracker()
