@@ -105,7 +105,6 @@ def company_activity_tracker( start_day, start_month, end_day, end_month, year )
   if start_month > end_month:
     return general_method_error + "Start month is greater than end month."
   
-  # Function to determine which companies had no activity for a given date range
   publish_dates_dict = check_sys_args()
 
   if isinstance(publish_dates_dict, dict):
@@ -126,7 +125,6 @@ def company_activity_tracker( start_day, start_month, end_day, end_month, year )
           if day <= end_day and day >= start_day:
             results_dict[company].append(day)
       
-
       elif start_month < end_month and start_month in publish_dates_dict[company]['posts'][year] and end_month in publish_dates_dict[company]['posts'][year]:
         for month in range(start_month, end_month+1):
           if month not in publish_dates_dict[company]['posts'][year]:
@@ -150,6 +148,7 @@ def company_activity_tracker( start_day, start_month, end_day, end_month, year )
       comapnies_without_activity.append(company)
 
   return comapnies_without_activity
+
 
 def check_args_and_call_company_activity_tracker():
   # check that all args are indeed int values
