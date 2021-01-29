@@ -24,7 +24,7 @@ def parse_rss_url_xml( company_and_rss_url_dict ):
   rss_published_days = {}
 
   for company in company_and_rss_url_dict:
-    # Add company names to the dict
+    # add company names to the dict
     if company not in rss_published_days:
       rss_published_days[company] = {}
       rss_published_days[company]['posts'] = {}
@@ -63,6 +63,7 @@ def create_publish_history_dicts_for_RSS( value, company, rss_published_days ):
 
   return rss_published_days
 
+
 def check_sys_args():
   publish_dates_dict = parse_rss_url_xml(rss_dict)
 
@@ -86,8 +87,15 @@ def check_sys_args():
 
   return publish_dates_dict
 
+
+def intTryParse(value):
+    try:
+        return int(value), True
+    except ValueError:
+        return value, False
+
 ####################################################################################
-##### Main Method #####
+##### Main Methods #####
 ####################################################################################
 def companyActivityTracker( start_day, start_month, end_day, end_month, year ):
   # Defining helpful error messages for using method
@@ -143,7 +151,19 @@ def companyActivityTracker( start_day, start_month, end_day, end_month, year ):
 
   return comapnies_without_activity
 
+def check_args_and_call_companyActivityTracker():
+  # check that all args are indeed int values
+  flag = 0
+  for i in range(1, len(sys.argv)):
+    if intTryParse(sys.argv[i])[1] == False:
+      flag = 1
 
-print(companyActivityTracker(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
+  if len(sys.argv) != 6:
+      print("ERROR: Incorrect number of args given")
+  elif len(sys.argv) == 6 and flag == 0:
+    print(companyActivityTracker(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
+  else:
+    print("ERROR: Non-integer value passed as date")
+  return
 
-
+check_args_and_call_companyActivityTracker()
