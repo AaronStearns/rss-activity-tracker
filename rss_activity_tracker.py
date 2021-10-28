@@ -88,6 +88,7 @@ def check_sys_args():
   return publish_dates_dict
 
 
+
 def int_try_parse(value):
     try:
         return int(value), True
@@ -148,6 +149,21 @@ def company_activity_tracker( start_day, start_month, end_day, end_month, year )
       comapnies_without_activity.append(company)
 
   return comapnies_without_activity
+
+def check_args_and_call_companyActivityTracker():
+  # check that all args are indeed int values
+  flag = 0
+  for i in range(1, len(sys.argv)):
+    if intTryParse(sys.argv[i])[1] == False:
+      flag = 1
+
+  if len(sys.argv) != 6:
+      print("ERROR: Incorrect number of args given")
+  elif len(sys.argv) == 6 and flag == 0:
+    print(companyActivityTracker(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
+  else:
+    print("ERROR: Non-integer value passed as date")
+  return
 
 
 def check_args_and_call_company_activity_tracker():
