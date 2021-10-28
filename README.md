@@ -6,7 +6,7 @@
 
 `companies_rss_dict.py` contains a dictionary keyed by company with values as lists of RSS feed urls
 
-`rss_activity_tracker.py` is the main script and imports the dict from companies_rss_dict.py
+`rss_activity_tracker.py` is the main script and imports the dict from `companies_rss_dict.py`
 
 ## To run:
 
