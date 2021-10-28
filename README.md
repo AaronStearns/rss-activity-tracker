@@ -2,6 +2,8 @@
 
 # rss-activity-tracker
 
+This is a script that takes in a dictionary of RSS feed urls to determine which RSS feed has not had any activity within a provided range of dates.
+
 ## Files:
 
 `companies_rss_dict.py` contains a dictionary keyed by company with values as lists of RSS feed urls
